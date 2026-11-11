@@ -1,0 +1,522 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parade of Nations Scoring System</title>
+
+<style>
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+body{margin:0;background:#edf4fb;color:#17324d}
+header{background:linear-gradient(120deg,#082b50,#087fbd);color:white;text-align:center;padding:25px}
+header h1{margin:0;font-size:30px}
+.container{max-width:1400px;margin:auto;padding:20px}
+.panel{background:white;padding:20px;border-radius:12px;margin-bottom:18px;box-shadow:0 3px 10px #0001}
+h2{color:#0b477d}
+.formgrid{display:grid;grid-template-columns:2fr 1fr;gap:12px}
+label{display:block;font-weight:bold;margin-bottom:6px}
+input{width:100%;padding:11px;border:1px solid #bac9d8;border-radius:6px;font-size:15px}
+.tabs{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:18px}
+.tabs button{flex:1;min-width:130px;padding:15px;border:0;border-radius:8px;background:#dce8f4;color:#123b62;font-weight:bold;cursor:pointer}
+.tabs button.active{background:#0879bd;color:white}
+.criteria{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.criteria div{background:#edf5fc;padding:14px;border-radius:8px}
+.criteria b{display:block;color:#07548c;margin-bottom:5px}
+.action{padding:12px 17px;border:0;border-radius:7px;background:#0879bd;color:white;font-weight:bold;cursor:pointer;margin:7px 3px}
+.green{background:#16834b}
+.red{background:#d94343}
+.gray{background:#596b7c}
+.tablewrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:950px;margin-top:12px}
+th{background:#123f69;color:white;padding:13px 7px;font-size:12px}
+td{padding:10px 6px;border:1px solid #d6e0e9;text-align:center}
+tbody tr:nth-child(even){background:#f4f8fc}
+td input{width:80px;text-align:center}
+.name{text-align:left;font-weight:bold;min-width:150px}
+.rank{font-size:18px;font-weight:bold;color:#0879bd}
+.raw{font-size:19px;font-weight:bold;color:#087c45}
+.first{background:#fff1bc!important}
+.second{background:#e9eff6!important}
+.third{background:#f9e5d6!important}
+.ranking{padding:0;list-style:none}
+.ranking li{padding:12px;border-bottom:1px solid #dce5ef;display:flex;justify-content:space-between;gap:10px}
+.note{font-size:13px;color:#667}
+.champion{background:#fff4d4;padding:17px;border-radius:8px;text-align:center;color:#795500;font-weight:bold}
+@media(max-width:750px){
+.criteria{grid-template-columns:repeat(2,1fr)}
+.formgrid{grid-template-columns:1fr}
+}
+@media print{
+.no-print{display:none!important}
+body{background:white}
+.container{padding:0}
+.panel{box-shadow:none;border:1px solid #ccc}
+table{min-width:100%;font-size:10px}
+th{background:#ddd!important;color:black}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>🏆 PARADE OF NATIONS</h1>
+<p>OFFICIAL SCORING AND RANKING SYSTEM</p>
+<p>KEY STAGE 1 AND KEY STAGE 2 | MALE AND FEMALE</p>
+</header>
+
+<div class="container">
+
+<!-- JUDGE -->
+<div class="panel">
+<h2>JUDGE'S INFORMATION</h2>
+<div class="formgrid">
+<div>
+<label>Judge's Full Name</label>
+<input id="judge" placeholder="Enter judge's name">
+</div>
+<div>
+<label>Date of Judging</label>
+<input id="date" type="date">
+</div>
+</div>
+<p class="note">One judge handles all four categories.</p>
+</div>
+
+<!-- CRITERIA -->
+<div class="panel">
+<h2>OFFICIAL JUDGING CRITERIA</h2>
+<div class="criteria">
+<div>
+<b>Authenticity & Creativity of Costume</b>
+Maximum: <strong>40 points</strong>
+</div>
+<div>
+<b>Presentation & Bearing</b>
+Maximum: <strong>30 points</strong>
+</div>
+<div>
+<b>Country Representation</b>
+Maximum: <strong>20 points</strong>
+</div>
+<div>
+<b>Discipline & Orderliness</b>
+Maximum: <strong>10 points</strong>
+</div>
+</div>
+<h3>TOTAL RAW SCORE: 100 POINTS</h3>
+<p class="note">The score is the sum of the four criteria. No weighted-total calculation is applied. Each criterion has its own maximum score.</p>
+</div>
+
+<!-- CATEGORY TABS -->
+<div class="tabs no-print">
+<button id="tab1m" class="active" onclick="switchCategory('1m')">KS1 MALE</button>
+<button id="tab1f" onclick="switchCategory('1f')">KS1 FEMALE</button>
+<button id="tab2m" onclick="switchCategory('2m')">KS2 MALE</button>
+<button id="tab2f" onclick="switchCategory('2f')">KS2 FEMALE</button>
+</div>
+
+<!-- ADD CONTESTANT -->
+<div class="panel no-print">
+<h2 id="categoryTitle">KEY STAGE 1 - MALE</h2>
+<div class="formgrid">
+<div>
+<label>Country / Contestant Name</label>
+<input id="country" placeholder="Enter contestant name">
+</div>
+<div>
+<label>Contestant Number</label>
+<input id="number" placeholder="Enter number">
+</div>
+</div>
+<button class="action" onclick="addContestant()">+ ADD CONTESTANT</button>
+</div>
+
+<!-- SCORING TABLE -->
+<div class="panel">
+<h2 id="tableTitle">KS1 MALE - SCORING AND RANKING</h2>
+
+<div class="tablewrap">
+<table>
+<thead>
+<tr>
+<th>RANK</th>
+<th>NO.</th>
+<th>COUNTRY / CONTESTANT</th>
+<th>COSTUME<br>40 MAX</th>
+<th>PRESENTATION<br>30 MAX</th>
+<th>COUNTRY<br>20 MAX</th>
+<th>DISCIPLINE<br>10 MAX</th>
+<th>RAW SCORE<br>100 MAX</th>
+<th class="no-print">ACTION</th>
+</tr>
+</thead>
+<tbody id="scoreBody"></tbody>
+</table>
+</div>
+
+<div class="champion" id="championBox">
+No contestants encoded yet.
+</div>
+
+<div class="no-print">
+<button class="action green" onclick="exportCSV()">DOWNLOAD CSV</button>
+<button class="action gray" onclick="window.print()">PRINT RESULTS</button>
+<button class="action red" onclick="clearCategory()">CLEAR CATEGORY</button>
+</div>
+</div>
+
+<!-- LIVE RANKING -->
+<div class="panel">
+<h2 id="rankingTitle">🏆 KS1 MALE - LIVE RANKING</h2>
+<p class="note">Rankings update automatically after score encoding.</p>
+<ul class="ranking" id="rankingList">
+<li>No contestants encoded yet.</li>
+</ul>
+</div>
+
+</div>
+
+<script>
+
+let current='1m';
+
+let data={
+'1m':[],
+'1f':[],
+'2m':[],
+'2f':[]
+};
+
+const STORAGE_KEY='parade_nations_final_100';
+
+const labels={
+'1m':'KEY STAGE 1 - MALE',
+'1f':'KEY STAGE 1 - FEMALE',
+'2m':'KEY STAGE 2 - MALE',
+'2f':'KEY STAGE 2 - FEMALE'
+};
+
+const limits={
+costume:40,
+presentation:30,
+representation:20,
+discipline:10
+};
+
+// RAW SCORE: MAXIMUM 100
+function rawScore(c){
+return Number(c.costume)+
+Number(c.presentation)+
+Number(c.representation)+
+Number(c.discipline);
+}
+
+function sorted(){
+return [...data[current]].sort(
+(a,b)=>rawScore(b)-rawScore(a)
+);
+}
+
+// SAVE RECORDS
+function save(){
+try{
+localStorage.setItem(STORAGE_KEY,JSON.stringify({
+data:data,
+judge:document.getElementById('judge').value,
+date:document.getElementById('date').value
+}));
+}catch(e){
+console.warn('Unable to save records.');
+}
+}
+
+// LOAD RECORDS
+function load(){
+try{
+let saved=JSON.parse(localStorage.getItem(STORAGE_KEY));
+if(saved){
+data=saved.data||data;
+document.getElementById('judge').value=saved.judge||'';
+document.getElementById('date').value=saved.date||'';
+}
+}catch(e){}
+}
+
+// CHANGE CATEGORY
+function switchCategory(k){
+current=k;
+
+document.querySelectorAll('.tabs button')
+.forEach(b=>b.classList.remove('active'));
+
+document.getElementById('tab'+k).classList.add('active');
+
+document.getElementById('categoryTitle').textContent=labels[k];
+document.getElementById('tableTitle').textContent=labels[k]+' - SCORING AND RANKING';
+document.getElementById('rankingTitle').textContent='🏆 '+labels[k]+' - LIVE RANKING';
+
+render();
+}
+
+// ADD CONTESTANT
+function addContestant(){
+
+let name=document.getElementById('country').value.trim();
+let number=document.getElementById('number').value.trim();
+
+if(!name){
+alert('Please enter contestant name.');
+return;
+}
+
+if(data[current].some(
+c=>c.country.toLowerCase()===name.toLowerCase()
+)){
+alert('Contestant already exists in this category.');
+return;
+}
+
+data[current].push({
+country:name,
+number:number||String(data[current].length+1).padStart(2,'0'),
+costume:0,
+presentation:0,
+representation:0,
+discipline:0
+});
+
+document.getElementById('country').value='';
+document.getElementById('number').value='';
+
+render();
+}
+
+// SAFE TEXT
+function esc(v){
+return String(v).replace(/[&<>"']/g,ch=>({
+'&':'&amp;',
+'<':'&lt;',
+'>':'&gt;',
+'"':'&quot;',
+"'":'&#39;'
+})[ch]);
+}
+
+// SCORE INPUT
+function inputCell(i,field,value){
+let max=limits[field];
+
+return `<td>
+<input type="number"
+min="0"
+max="${max}"
+step="1"
+value="${value}"
+aria-label="${field} score"
+onchange="updateScore(${i},'${field}',this.value)">
+</td>`;
+}
+
+// UPDATE SCORE
+function updateScore(i,field,value){
+
+if(value.trim()===''){
+alert('Please enter a score.');
+render();
+return;
+}
+
+let n=Number(value);
+let max=limits[field];
+
+if(!Number.isFinite(n)||
+!Number.isInteger(n)||
+n<0||
+n>max){
+
+alert('Invalid score! Maximum allowed for this criterion: '+max);
+render();
+return;
+}
+
+data[current][i][field]=n;
+
+render();
+}
+
+// DISPLAY TABLE AND RANK
+function render(){
+
+let body=document.getElementById('scoreBody');
+body.innerHTML='';
+
+let list=sorted();
+
+list.forEach((c,r)=>{
+
+let i=data[current].indexOf(c);
+
+let tr=document.createElement('tr');
+
+if(r===0)tr.classList.add('first');
+if(r===1)tr.classList.add('second');
+if(r===2)tr.classList.add('third');
+
+tr.innerHTML=`
+<td class="rank">${r+1}</td>
+<td>${esc(c.number)}</td>
+<td class="name">${esc(c.country)}</td>
+${inputCell(i,'costume',c.costume)}
+${inputCell(i,'presentation',c.presentation)}
+${inputCell(i,'representation',c.representation)}
+${inputCell(i,'discipline',c.discipline)}
+<td class="raw">${rawScore(c)}</td>
+<td class="no-print">
+<button class="action red"
+onclick="removeContestant(${i})">DELETE</button>
+</td>`;
+
+body.appendChild(tr);
+
+});
+
+updateRanking(list);
+updateChampion(list);
+save();
+}
+
+// LIVE RANKING
+function updateRanking(list){
+
+let ul=document.getElementById('rankingList');
+ul.innerHTML='';
+
+if(!list.length){
+ul.innerHTML='<li>No contestants encoded yet.</li>';
+return;
+}
+
+list.forEach((c,i)=>{
+
+let li=document.createElement('li');
+
+li.innerHTML=`
+<span><b>RANK ${i+1} - ${esc(c.country)}</b></span>
+<strong>RAW SCORE: ${rawScore(c)} / 100</strong>`;
+
+ul.appendChild(li);
+
+});
+
+}
+
+// CHAMPION
+function updateChampion(list){
+
+let box=document.getElementById('championBox');
+
+if(!list.length){
+box.textContent='No contestants encoded yet.';
+return;
+}
+
+box.textContent=
+'🏆 CHAMPION: '+list[0].country+
+' | RAW SCORE: '+rawScore(list[0])+'/100';
+}
+
+// DELETE CONTESTANT
+function removeContestant(i){
+
+if(!confirm('Delete this contestant?'))return;
+
+data[current].splice(i,1);
+render();
+
+}
+
+// CLEAR CATEGORY
+function clearCategory(){
+
+if(!confirm('Clear all contestants and scores in '+labels[current]+'?'))return;
+
+data[current]=[];
+render();
+
+}
+
+// EXPORT CSV
+function exportCSV(){
+
+let list=sorted();
+
+if(!list.length){
+alert('No results to export.');
+return;
+}
+
+let rows=[
+['PARADE OF NATIONS'],
+[labels[current]],
+['Judge',document.getElementById('judge').value],
+['Date',document.getElementById('date').value],
+[],
+[
+'RANK',
+'NUMBER',
+'COUNTRY',
+'COSTUME /40',
+'PRESENTATION /30',
+'COUNTRY REPRESENTATION /20',
+'DISCIPLINE /10',
+'RAW SCORE /100'
+]
+];
+
+list.forEach((c,i)=>{
+
+rows.push([
+i+1,
+c.number,
+c.country,
+c.costume,
+c.presentation,
+c.representation,
+c.discipline,
+rawScore(c)
+]);
+
+});
+
+let csv=rows.map(row=>row.map(v=>
+'"'+String(v??'').replace(/"/g,'""')+'"'
+).join(',')).join('\r\n');
+
+let blob=new Blob(['\uFEFF'+csv],{
+type:'text/csv;charset=utf-8'
+});
+
+let url=URL.createObjectURL(blob);
+let a=document.createElement('a');
+
+a.href=url;
+a.download=labels[current].replaceAll(' ','_')+'_Results.csv';
+a.click();
+
+setTimeout(()=>URL.revokeObjectURL(url),1000);
+
+}
+
+// JUDGE INFORMATION
+document.getElementById('judge').addEventListener('input',save);
+document.getElementById('date').addEventListener('change',save);
+
+// INITIALIZE
+load();
+render();
+
+</script>
+</body>
+</html>
